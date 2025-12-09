@@ -8,8 +8,5 @@
     "noFallthroughCasesInSwitch": false,
     "allowJs": true
   },
-  "include": [
-    "**/*.ts",
-    "node_modules/@types/**/*.d.ts"
-  ]
+  "include": ["**/*.ts", "node_modules/@types/**/*.d.ts"]
 }
