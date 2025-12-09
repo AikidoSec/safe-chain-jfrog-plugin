@@ -1,4 +1,3 @@
-import { PlatformContext } from 'jfrog-workers';
 import {
   BeforeDownloadRequest,
   BeforeDownloadResponse,
@@ -19,7 +18,7 @@ import { getPkgNameAndVersion } from './getPkgNameAndVersion';
 import { openMalwareDatabase } from './aikido/openMalwareDatabase';
 
 export default async (
-  context: PlatformContext,
+  context: any,
   data: BeforeDownloadRequest
 ): Promise<BeforeDownloadResponse> => {
   console.log(JSON.stringify(data));

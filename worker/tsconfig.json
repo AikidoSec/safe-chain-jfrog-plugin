@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "moduleResolution": "node",
     "declaration": true,
     "target": "es2017",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "allowJs": true
+    "outFile": "./dist/bundle.ts"
   },
-  "include": ["**/*.ts", "node_modules/@types/**/*.d.ts"]
+  "include": ["src/**/*"]
 }
