@@ -17,7 +17,9 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
+        working-directory: worker/
         run: npm ci
 
       - name: Run TypeScript type check
+        working-directory: worker/
         run: npm run typecheck
