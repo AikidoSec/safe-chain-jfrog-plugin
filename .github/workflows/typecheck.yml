@@ -5,7 +5,7 @@ on:
     branches: ["**"]
 
 jobs:
-  prettier-check:
+  typecheck:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
