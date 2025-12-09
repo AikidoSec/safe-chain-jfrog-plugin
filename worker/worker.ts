@@ -1,6 +1,6 @@
 import {PlatformContext} from 'jfrog-workers';
 import {BeforeDownloadRequest, BeforeDownloadResponse, DownloadStatus, RepoType} from './types';
-import {fetchMalwareDatabase} from "./aikido-malware";
+import {fetchMalwareDatabase} from "./aikido/fetchMalwareDatabase";
 import {
     DOWNLOAD_OK_ECOSYSTEM,
     DOWNLOAD_OK_NOT_REMOTE,
@@ -32,6 +32,7 @@ export default async (context: PlatformContext, data: BeforeDownloadRequest): Pr
         console.log(`safe-chain got database version ${malwareDatabase.version} for ecosystem ${ecosystem}`);
 
         // Check if match in malware database
+
 
     } catch (error) {
         console.log(`Got error: ${JSON.stringify(error)}`);
