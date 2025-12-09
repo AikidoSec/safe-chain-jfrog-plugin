@@ -5,7 +5,6 @@ import {
   DownloadStatus,
   RepoType,
 } from './types';
-import { fetchMalwareDatabase } from './aikido/fetchMalwareDatabase';
 import {
   DOWNLOAD_OK_ECOSYSTEM,
   DOWNLOAD_OK_NOT_REMOTE,
