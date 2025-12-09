@@ -2,8 +2,9 @@
   "name": "safe-chain-jfrog-worker",
   "version": "1.0.0",
   "description": "Blocks malware detected by safe-chain from being downloaded",
-  "main": "worker.ts",
+  "main": "src/worker.ts",
   "scripts": {
+    "build": "tsc",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit"
   },
@@ -15,10 +16,8 @@
   ],
   "author": "Aikido Security",
   "license": "ISC",
-  "dependencies": {
-    "jfrog-workers": "^0.8.0"
-  },
   "devDependencies": {
+    "jfrog-workers": "^0.8.0",
     "prettier": "^3.7.4",
     "typescript": "^5.9.3"
   }
