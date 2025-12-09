@@ -3,23 +3,37 @@ import {BeforeDownloadRequest, BeforeDownloadResponse, DownloadStatus, RepoType}
 import {fetchMalwareDatabase} from "./aikido-malware";
 
 export default async (context: PlatformContext, data: BeforeDownloadRequest): Promise<BeforeDownloadResponse> => {
-    let status: DownloadStatus = DownloadStatus.DOWNLOAD_PROCEED;
-    let message = 'Allowing Download';
+    let status: DownloadStatus = DownloadStatus.DOWNLOAD_STOP;
+    let message = 'Safe-Chain could not verify safety, stopping download.';
 
     try {
         if (data.metadata.repoType != RepoType.REPO_TYPE_REMOTE) {
             // We only want to run safe-chain checks on remote npm repos
-            return;
+            return {
+                status: DownloadStatus.DOWNLOAD_PROCEED,
+                message: "Safe-Chain allowing download, repo type is not remote."
+            };
         }
-        // Fetch ~8MB json database from aikido
-        const malwareDatabase = await fetchMalwareDatabase("js");
+
+        // Check if it's npm or pypi
+        const ecosystem: string | undefined = undefined;
+
+        if (!ecosystem) {
+            return {
+                status: DownloadStatus.DOWNLOAD_PROCEED,
+                message: "Safe-Chain allowing download, no supported ecosystem found"
+            }
+        }
+
+        // Fetch json database from aikido (around 8MB, size constraints met)
+        const malwareDatabase = await fetchMalwareDatabase(ecosystem);
+
     } catch (error) {
         console.log(`Got error: ${JSON.stringify(error)}`);
-        message = `Safe-Chain could not check safety.`;
-        status = DownloadStatus.DOWNLOAD_STOP;
+        message += `\nError: ${JSON.stringify(error)}`;
     }
 
     return {
-        status, message,
+        status, message
     }
 }
