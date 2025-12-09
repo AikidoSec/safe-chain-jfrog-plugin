@@ -23,6 +23,7 @@ export default async (
   context: PlatformContext,
   data: BeforeDownloadRequest
 ): Promise<BeforeDownloadResponse> => {
+  console.log(JSON.stringify(data));
   try {
     if (!isRemoteRepo(data)) {
       // We only want to run safe-chain checks on remote npm repos
