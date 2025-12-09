@@ -1,0 +1,1 @@
+# safe-chain-jfrog-plugin
