@@ -19,3 +19,11 @@ export const DOWNLOAD_WARN_NO_PACKAGE_NAME_OR_VERSION = {
     status: DownloadStatus.DOWNLOAD_WARN,
     message: "Safe-Chain wasn't able to extract package name and/or version."
 }
+export const DOWNLOAD_OK_SAFE = {
+    status: DownloadStatus.DOWNLOAD_PROCEED,
+    message: "Safe-Chain allowing download, is safe."
+}
+export const DOWNLOAD_STOP_MALWARE = {
+    status: DownloadStatus.DOWNLOAD_STOP,
+    message: "Safe-Chain detected malware, stopping download."
+}
