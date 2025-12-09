@@ -1,6 +1,0 @@
-{
-  "name": "safe-chain-jfrog-worker",
-  "description": "Blocks package downloads flagged as malicious by safe-chain",
-  "events": ["beforeDownload"],
-  "script": "worker.ts"
-}

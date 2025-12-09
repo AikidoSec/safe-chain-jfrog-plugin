@@ -1,0 +1,8 @@
+{
+  "name": "safe-chain-jfrog-worker",
+  "description": "safe-chain jfrog worker that checks whether a package is malware before its downloaded",
+  "secrets": {},
+  "sourceCodePath": "./worker.ts",
+  "action": "BEFORE_DOWNLOAD",
+  "enabled": true
+}
