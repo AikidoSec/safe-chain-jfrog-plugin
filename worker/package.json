@@ -1,0 +1,17 @@
+{
+  "name": "safe-chain-jfrog-worker",
+  "version": "1.0.0",
+  "description": "Blocks malware detected by safe-chain from being downloaded",
+  "main": "worker.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "safe-chain",
+    "jfrog",
+    "security",
+    "aikido"
+  ],
+  "author": "Aikido Security",
+  "license": "ISC"
+}
