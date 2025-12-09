@@ -1,5 +1,5 @@
-import { PlatformContext } from 'jfrog-workers';
-import { BeforeDownloadRequest, BeforeDownloadResponse, DownloadStatus } from './types';
+import {PlatformContext} from 'jfrog-workers';
+import {BeforeDownloadRequest, BeforeDownloadResponse, DownloadStatus, RepoType} from './types';
 import {fetchMalwareDatabase} from "./aikido-malware";
 
 export default async (context: PlatformContext, data: BeforeDownloadRequest): Promise<BeforeDownloadResponse> => {
@@ -7,6 +7,10 @@ export default async (context: PlatformContext, data: BeforeDownloadRequest): Pr
     let message = 'Allowing Download';
 
     try {
+        if (data.metadata.repoType != RepoType.REPO_TYPE_REMOTE) {
+            // We only want to run safe-chain checks on remote npm repos
+            return;
+        }
         // Fetch ~8MB json database from aikido
         const malwareDatabase = await fetchMalwareDatabase("js");
     } catch (error) {
