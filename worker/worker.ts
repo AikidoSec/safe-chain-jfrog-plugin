@@ -179,21 +179,23 @@ export async function fetchMalwareDatabase(
 ): Promise<MalwareDatabaseResponse> {
   const malwareDatabaseUrl =
     malwareDatabaseUrls[ecosystem as keyof typeof malwareDatabaseUrls];
-  const response = await axios.get(malwareDatabaseUrl);
-
-  if (!response.ok) {
-    throw new Error(
-      `Error fetching ${ecosystem} malware database: ${response.statusText}`
-    );
-  }
 
   try {
+    const response = await axios.get(malwareDatabaseUrl);
+
+    if (response.status !== 200) {
+      throw new Error(
+        `Error fetching ${ecosystem} malware database: ${response.status} ${response.data}`
+      );
+    }
+
     const malwareDatabase = response.data;
     return {
       malwareDatabase: malwareDatabase as MalwarePackage[],
       version: response.headers['etag'] ?? undefined,
     };
   } catch (error) {
+    console.log("Error is " + error);
     if (error instanceof Error) {
       throw new Error(`Error parsing malware database: ${error.message}`);
     }
