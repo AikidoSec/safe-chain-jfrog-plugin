@@ -71,7 +71,7 @@ export default async (
 
     // Fetch json database from aikido (around 8MB, size constraints met)
     const ecosystem = ECOSYSTEM_JS;
-    const malwareDatabase = await openMalwareDatabase(ecosystem);
+    const malwareDatabase = await openMalwareDatabase(ecosystem, context.clients.axios);
     console.log(
       `safe-chain got database version ${malwareDatabase.version} for ecosystem ${ecosystem}`
     );
@@ -122,9 +122,10 @@ function isMalwareStatus(status: string): boolean {
 }
 
 export async function openMalwareDatabase(
-  ecosystem: string
+  ecosystem: string,
+  axios: any,
 ): Promise<MalwareDatabase> {
-  const { malwareDatabase, version } = await fetchMalwareDatabase(ecosystem);
+  const { malwareDatabase, version } = await fetchMalwareDatabase(ecosystem, axios);
 
   function getPackageStatus(name: string, version: string): string {
     const normalizedName = normalizePackageName(name, ecosystem);
@@ -173,11 +174,12 @@ interface MalwareDatabaseResponse {
  * @returns {Promise<MalwareDatabaseResponse>}
  */
 export async function fetchMalwareDatabase(
-  ecosystem: string
+  ecosystem: string,
+  axios: any,
 ): Promise<MalwareDatabaseResponse> {
   const malwareDatabaseUrl =
     malwareDatabaseUrls[ecosystem as keyof typeof malwareDatabaseUrls];
-  const response = await fetch(malwareDatabaseUrl);
+  const response = await axios.get(malwareDatabaseUrl);
 
   if (!response.ok) {
     throw new Error(
@@ -186,10 +188,10 @@ export async function fetchMalwareDatabase(
   }
 
   try {
-    const malwareDatabase = await response.json();
+    const malwareDatabase = response.data;
     return {
       malwareDatabase: malwareDatabase as MalwarePackage[],
-      version: response.headers.get('etag') ?? undefined,
+      version: response.headers['etag'] ?? undefined,
     };
   } catch (error) {
     if (error instanceof Error) {
