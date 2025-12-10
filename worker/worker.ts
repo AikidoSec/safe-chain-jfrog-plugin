@@ -24,14 +24,6 @@ export default async (
       };
     }
 
-    const ecosystem = getEcosystem(data);
-    if (!ecosystem) {
-      return {
-        status: DownloadStatus.DOWNLOAD_PROCEED,
-        message: 'Safe-Chain allowing download, no supported ecosystem found',
-      };
-    }
-
     // extract package name & version from metadata
     const packageDetails = parseNpmPackageUrl(data.repoPath.path);
     if (!packageDetails) {
@@ -77,13 +69,6 @@ export default async (
 const isRemoteRepo = (data: BeforeDownloadRequest) => {
   return data.metadata.repoType == RepoType.REPO_TYPE_REMOTE;
 };
-const getEcosystem = (data: BeforeDownloadRequest) => {
-  if (data.repoPath.path.startsWith('npm')) {
-    return ECOSYSTEM_JS;
-  }
-  return undefined;
-};
-
 
 type MalwareDatabase = {
   version: string;
