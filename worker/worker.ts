@@ -33,7 +33,7 @@ export default async (
     }
 
     // extract package name & version from metadata
-    const packageDetails = getPkgNameAndVersion(data);
+    const packageDetails = parseNpmPackageUrl(data.repoPath.path);
     if (!packageDetails) {
       return {
         status: DownloadStatus.DOWNLOAD_WARN,
@@ -42,7 +42,7 @@ export default async (
       };
     }
     console.log(
-      `safe-chain scanning package ${packageDetails.name} and version ${packageDetails.version}`
+      `safe-chain scanning package ${packageDetails.packageName} and version ${packageDetails.version}`
     );
 
     // Fetch json database from aikido (around 8MB, size constraints met)
@@ -53,7 +53,7 @@ export default async (
 
     // Check if match in malware database
     if (
-      malwareDatabase.isMalware(packageDetails.name, packageDetails.version)
+      malwareDatabase.isMalware(packageDetails.packageName, packageDetails.version)
     ) {
       console.log(`safe-chain detected malware.`);
       return {
@@ -84,22 +84,7 @@ const getEcosystem = (data: BeforeDownloadRequest) => {
   return undefined;
 };
 
-const getPkgNameAndVersion = (
-  data: BeforeDownloadRequest
-): { name: string; version: string } | undefined => {
-  const name: string | undefined = undefined;
-  const version: string | undefined = undefined;
 
-  // [extraction code to do]
-
-  if (!name || !version) {
-    return undefined;
-  }
-
-  return { name, version };
-};
-
-// MALWARE CODE
 type MalwareDatabase = {
   version: string;
   isMalware: (name: string, version: string) => boolean;
@@ -149,7 +134,6 @@ export async function openMalwareDatabase(
   };
 }
 
-// fetch malware database
 const malwareDatabaseUrls = {
   [ECOSYSTEM_JS]: 'https://malware-list.aikido.dev/malware_predictions.json',
   [ECOSYSTEM_PY]: 'https://malware-list.aikido.dev/malware_pypi.json',
@@ -195,4 +179,43 @@ export async function fetchMalwareDatabase(
     }
     throw new Error('Error parsing malware database: Unknown error');
   }
+}
+
+
+/**
+ * Copied from packages/safe-chain/src/registryProxy/interceptors/npm/parseNpmPackageUrl.js
+ * @param {string} urlPath
+ * @returns {{packageName: string | undefined, version: string | undefined}}
+ */
+export function parseNpmPackageUrl(urlPath: string) {
+  let packageName, version;
+
+  const separatorIndex = urlPath.indexOf("/-/");
+  if (separatorIndex === -1) {
+    return { packageName, version };
+  }
+
+  packageName = urlPath.substring(0, separatorIndex);
+  const filename = urlPath.substring(
+    separatorIndex + 3,
+    urlPath.length - 4
+  ); // Remove /-/ and .tgz
+
+  // Extract version from filename
+  // For scoped packages like @babel/core, the filename is core-7.21.4.tgz
+  // For regular packages like lodash, the filename is lodash-4.17.21.tgz
+  if (packageName.startsWith("@")) {
+    const scopedPackageName = packageName.substring(
+      packageName.lastIndexOf("/") + 1
+    );
+    if (filename.startsWith(scopedPackageName + "-")) {
+      version = filename.substring(scopedPackageName.length + 1);
+    }
+  } else {
+    if (filename.startsWith(packageName + "-")) {
+      version = filename.substring(packageName.length + 1);
+    }
+  }
+
+  return { packageName, version };
 }
