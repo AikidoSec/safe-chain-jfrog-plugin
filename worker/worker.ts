@@ -1,17 +1,50 @@
-import { PlatformContext } from 'jfrog-workers';
-import {
-  BeforeDownloadRequest,
-  BeforeDownloadResponse,
-  DownloadStatus,
-  RepoType,
-} from './types';
+// define types
+interface BeforeDownloadRequest {
+  metadata: DownloadMetadata | undefined;
+  repoPath: RepoPath | undefined;
+}
 
-// define consts for both npm and pip
-export const ECOSYSTEM_JS = 'js';
-export const ECOSYSTEM_PY = 'py';
+interface DownloadMetadata {
+  repoPath: RepoPath | undefined;
+  originalRepoPath: RepoPath | undefined;
+  name: string;
+  repoType: RepoType;
+}
+
+interface RepoPath {
+  key: string;
+  path: string;
+  id: string;
+  isRoot: boolean;
+  isFolder: boolean;
+}
+
+enum RepoType {
+  REPO_TYPE_UNSPECIFIED = 0,
+  REPO_TYPE_LOCAL = 1,
+  REPO_TYPE_REMOTE = 2,
+  REPO_TYPE_FEDERATED = 3,
+  UNRECOGNIZED = -1,
+}
+
+interface BeforeDownloadResponse {
+  status: DownloadStatus;
+  message: string;
+}
+
+enum DownloadStatus {
+  DOWNLOAD_UNSPECIFIED = 0,
+  DOWNLOAD_PROCEED = 1,
+  DOWNLOAD_STOP = 2,
+  DOWNLOAD_WARN = 3,
+  UNRECOGNIZED = -1,
+}
+
+const ECOSYSTEM_JS = 'js';
+const ECOSYSTEM_PY = 'py';
 
 export default async (
-  context: PlatformContext,
+  context: any,
   data: BeforeDownloadRequest
 ): Promise<BeforeDownloadResponse> => {
   console.log(JSON.stringify(data));
@@ -25,8 +58,8 @@ export default async (
     }
 
     // extract package name & version from metadata
-    const packageDetails = parseNpmPackageUrl(data.repoPath.path);
-    if (!packageDetails) {
+    const npmPackage = parseNpmPackageUrl(data.repoPath.path);
+    if (!npmPackage) {
       return {
         status: DownloadStatus.DOWNLOAD_WARN,
         message:
@@ -34,10 +67,11 @@ export default async (
       };
     }
     console.log(
-      `safe-chain scanning package ${packageDetails.packageName} and version ${packageDetails.version}`
+      `safe-chain scanning package ${npmPackage.packageName} and version ${npmPackage.version}`
     );
 
     // Fetch json database from aikido (around 8MB, size constraints met)
+    const ecosystem = ECOSYSTEM_JS;
     const malwareDatabase = await openMalwareDatabase(ecosystem);
     console.log(
       `safe-chain got database version ${malwareDatabase.version} for ecosystem ${ecosystem}`
@@ -45,7 +79,7 @@ export default async (
 
     // Check if match in malware database
     if (
-      malwareDatabase.isMalware(packageDetails.packageName, packageDetails.version)
+      malwareDatabase.isMalware(npmPackage.packageName, npmPackage.version)
     ) {
       console.log(`safe-chain detected malware.`);
       return {
