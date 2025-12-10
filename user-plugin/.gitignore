@@ -1,0 +1,13 @@
+# IDE files
+.idea/
+*.iml
+*.swp
+
+# Build files
+build/
+*.jar
+*.class
+
+# Logs
+*.log
+
