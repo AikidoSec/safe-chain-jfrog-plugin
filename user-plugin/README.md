@@ -14,3 +14,5 @@ This plugin prevents downloads from remote repositories in JFrog Artifactory.
 ## Configuration
 No additional configuration is required.
 
+## Related resources
+- https://jfrog.com/help/r/jfrog-integrations-documentation/user-plugins
