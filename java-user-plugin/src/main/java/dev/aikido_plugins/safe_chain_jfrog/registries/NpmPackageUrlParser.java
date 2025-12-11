@@ -1,4 +1,4 @@
-package dev.aikido_plugins.safe_chain_jfrog;
+package dev.aikido_plugins.safe_chain_jfrog.registries;
 
 public class NpmPackageUrlParser {
 

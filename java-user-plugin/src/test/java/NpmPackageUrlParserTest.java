@@ -1,4 +1,4 @@
-import dev.aikido_plugins.safe_chain_jfrog.NpmPackageUrlParser;
+import dev.aikido_plugins.safe_chain_jfrog.registries.NpmPackageUrlParser;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
