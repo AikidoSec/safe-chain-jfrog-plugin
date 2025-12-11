@@ -52,4 +52,46 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <artifactSet>
+                <excludes>
+                  <!-- Exclude provided dependencies (JFrog/Artifactory) -->
+                  <exclude>org.artifactory:*</exclude>
+                  <!-- Exclude test dependencies -->
+                  <exclude>org.junit.jupiter:*</exclude>
+                  <exclude>junit:*</exclude>
+                </excludes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <!-- Exclude signature files that can cause issues -->
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <finalName>${project.artifactId}-${project.version}-uber</finalName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
