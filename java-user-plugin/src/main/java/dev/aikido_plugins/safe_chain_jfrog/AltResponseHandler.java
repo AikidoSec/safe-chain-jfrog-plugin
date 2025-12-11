@@ -78,7 +78,8 @@ public class AltResponseHandler {
   }
 
   private static String getPackageType(String repoKey, Repositories repositories) {
-    RepositoryConfiguration config = repositories.getRepositoryConfiguration(repoKey);
-    return config.getPackageType();
+    return repoKey;
+    // RepositoryConfiguration config = repositories.getRepositoryConfiguration(repoKey);
+    // return config.getPackageType();
   }
 }
