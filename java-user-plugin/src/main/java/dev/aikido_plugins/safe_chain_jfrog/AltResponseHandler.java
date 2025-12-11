@@ -25,9 +25,8 @@ public class AltResponseHandler {
       return false;
     }
 
-    RepositoryConfiguration config = repositories.getRepositoryConfiguration(repoKey);
-    String packageType = config.getPackageType();
 
+    String packageType = getPackageType(repoKey, repositories);
     boolean isNpm = packageType.toLowerCase().contains("npm");
     boolean isPypi = packageType.toLowerCase().contains("pypi");
 
@@ -70,10 +69,16 @@ public class AltResponseHandler {
       return false;
     }
   }
+
   private static boolean isRemoteRepository(String repoKey, Repositories repositories) {
     if (repoKey.endsWith("-cache")) {
       repoKey = repoKey.substring(0, repoKey.length() - 6);
     }
     return repositories.getRemoteRepositories().contains(repoKey);
+  }
+
+  private static String getPackageType(String repoKey, Repositories repositories) {
+    RepositoryConfiguration config = repositories.getRepositoryConfiguration(repoKey);
+    return config.getPackageType();
   }
 }
