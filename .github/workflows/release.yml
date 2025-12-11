@@ -32,19 +32,15 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Building version: $VERSION"
 
-      - name: Build uber JAR
-        working-directory: java-user-plugin/
-        run: mvn clean package -DskipTests
-
       - name: Update pom.xml version
         working-directory: java-user-plugin/
         run: |
           mvn versions:set -DnewVersion=${{ steps.get_version.outputs.version }} -DgenerateBackupPoms=false
 
-      - name: build
+      - name: Build uber JAR
         working-directory: java-user-plugin/
-        run: |
-          mvn versions:set -DnewVersion=${{ steps.get_version.outputs.version }} -DgenerateBackupPoms=false
+        run: mvn clean package -DskipTests
+
       - name: Verify artifacts exist
         working-directory: java-user-plugin/
         run: |
