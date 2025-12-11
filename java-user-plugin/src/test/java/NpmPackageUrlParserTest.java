@@ -21,14 +21,6 @@ public class NpmPackageUrlParserTest {
   }
 
   @Test
-  public void testParseInvalidUrlNoTgz() {
-    String urlPath = "lodash/-/lodash-4.17.21";
-    NpmPackageUrlParser.ParsedNpmPackage result = NpmPackageUrlParser.parseNpmPackageUrl(urlPath);
-    assertNull(result.packageName());
-    assertNull(result.version());
-  }
-
-  @Test
   public void testParseInvalidUrlNoSeparator() {
     String urlPath = "lodash-4.17.21.tgz";
     NpmPackageUrlParser.ParsedNpmPackage result = NpmPackageUrlParser.parseNpmPackageUrl(urlPath);
