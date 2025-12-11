@@ -74,11 +74,12 @@ jobs:
 
       - name: Upload uber JAR
         uses: actions/upload-release-asset@v1
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/safe_chain_jfrog-${{ steps.get_version.outputs.version }}-uber.jar
+          asset_path: ./java-user-plugin/target/safe_chain_jfrog-${{ steps.get_version.outputs.version }}-uber.jar
           asset_name: safe_chain_jfrog-${{ steps.get_version.outputs.version }}-uber.jar
           asset_content_type: application/java-archive
 
@@ -88,6 +89,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./safeChainScript.groovy
+          asset_path: ./java-user-plugin/safeChainScript.groovy
           asset_name: safeChainScript.groovy
           asset_content_type: text/x-groovy
