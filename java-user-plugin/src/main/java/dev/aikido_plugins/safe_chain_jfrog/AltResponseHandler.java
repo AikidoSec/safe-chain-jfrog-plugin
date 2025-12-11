@@ -4,30 +4,35 @@ import dev.aikido_plugins.safe_chain_jfrog.database.MalwareDatabase;
 import dev.aikido_plugins.safe_chain_jfrog.database.MalwareDatabaseFetcher;
 import dev.aikido_plugins.safe_chain_jfrog.registries.NpmPackageUrlParser;
 import org.artifactory.repo.RepoPath;
+import org.artifactory.repo.Repositories;
+import org.artifactory.repo.RepositoryConfiguration;
 import org.artifactory.request.Request;
 
 import static dev.aikido_plugins.safe_chain_jfrog.registries.NpmPackageUrlParser.parseNpmPackageUrl;
 
 public class AltResponseHandler {
-  public static boolean handleAltResponse(Request request, RepoPath responseRepoPath) {
+  public static boolean handleAltResponse(Request request, RepoPath responseRepoPath, Repositories repositories) {
     System.out.println("[safe-chain] starting analysis");
-
-    String repoKey = responseRepoPath.getRepoKey();
-
-    // Check if it's a remote repository (contains "-remote" or similar pattern)
-    boolean isRemote = repoKey.toLowerCase().contains("remote");
-
-    // Determine package type based on repository key
-    boolean isNpm = repoKey.toLowerCase().contains("npm");
-    boolean isPypi = repoKey.toLowerCase().contains("pypi");
-
-    if ((!isNpm && !isPypi) || !isRemote) {
-      System.out.println("[safe-chain] skipping analysis - not a remote npm or pypi repository");
-      return false;
-    }
 
     String path = responseRepoPath.getPath();
     if (path == null) {
+      return false;
+    }
+
+    String repoKey = responseRepoPath.getRepoKey();
+    if (!isRemoteRepository(repoKey, repositories)) {
+      // we only perform safe-chain checks for remote repositories
+      return false;
+    }
+
+    RepositoryConfiguration config = repositories.getRepositoryConfiguration(repoKey);
+    String packageType = config.getPackageType();
+
+    boolean isNpm = packageType.toLowerCase().contains("npm");
+    boolean isPypi = packageType.toLowerCase().contains("pypi");
+
+    if (!isNpm && !isPypi) {
+      System.out.println("[safe-chain] skipping analysis - not a remote npm or pypi repository");
       return false;
     }
 
@@ -64,5 +69,11 @@ public class AltResponseHandler {
       System.err.println("[safe-chain] error fetching malware database: " + e.getMessage());
       return false;
     }
+  }
+  private static boolean isRemoteRepository(String repoKey, Repositories repositories) {
+    if (repoKey.endsWith("-cache")) {
+      repoKey = repoKey.substring(0, repoKey.length() - 6);
+    }
+    return repositories.getRemoteRepositories().contains(repoKey);
   }
 }
