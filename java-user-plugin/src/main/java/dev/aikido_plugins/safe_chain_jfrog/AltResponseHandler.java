@@ -9,7 +9,7 @@ import org.artifactory.request.Request;
 import static dev.aikido_plugins.safe_chain_jfrog.registries.NpmPackageUrlParser.parseNpmPackageUrl;
 
 public class AltResponseHandler {
-  public static Decision handleAltResponse(Request request, RepoPath responseRepoPath) {
+  public static boolean handleAltResponse(Request request, RepoPath responseRepoPath) {
     System.out.println("[safe-chain] starting analysis");
 
     String repoKey = responseRepoPath.getRepoKey();
@@ -23,23 +23,23 @@ public class AltResponseHandler {
 
     if ((!isNpm && !isPypi) || !isRemote) {
       System.out.println("[safe-chain] skipping analysis - not a remote npm or pypi repository");
-      return null;
+      return false;
     }
 
     String path = responseRepoPath.getPath();
     if (path == null) {
-      return null;
+      return false;
     }
 
     if (isPypi) {
       // not supported at this point.
-      return null;
+      return false;
     }
 
     NpmPackageUrlParser.ParsedNpmPackage pkg = parseNpmPackageUrl(path);
     if (pkg.packageName() == null || pkg.version() == null) {
       System.out.println("[safe-chain] unable to parse npm package from path: " + path);
-      return null;
+      return false;
     }
 
     System.out.println("[safe-chain] analyzing npm package: " + pkg.packageName() + "@" + pkg.version());
@@ -54,18 +54,15 @@ public class AltResponseHandler {
           pkg.version()
         );
         System.out.println("[safe-chain] BLOCKED: " + message);
-        return new Decision(403, "blocked by safe-chain");
+        return true;
       } else {
         System.out.println("[safe-chain] package is safe: " + pkg.packageName() + "@" + pkg.version());
-        return null;
+        return false;
       }
 
     } catch (Exception e) {
       System.err.println("[safe-chain] error fetching malware database: " + e.getMessage());
-      return null;
+      return false;
     }
-  }
-
-  public record Decision(int status, String text) {
   }
 }
