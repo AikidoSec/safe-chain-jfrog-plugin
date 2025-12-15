@@ -7,7 +7,7 @@ There are two possibilites to deploy safe-chain checks to JFrog:
 ### How it works
 This plugin will double check your npm packages before downloading given that the repository :
 - is a remote repository
-- and the repository has `npm` in it's name
+- and the repository's package type is npm
 
 ### How to Install
 Go to the latest release page and download the safe-chain jar and groovy script, then :
