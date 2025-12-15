@@ -1,3 +1,7 @@
+/**
+ * org.artifactory definitions can be found here :
+ * https://releases.jfrog.io/artifactory/oss-releases-virtual/org/artifactory/artifactory-papi/%5BRELEASE%5D/artifactory-papi-%5BRELEASE%5D-javadoc.jar!/index.html
+ */
 package dev.aikido_plugins.safe_chain_jfrog;
 
 import dev.aikido_plugins.safe_chain_jfrog.database.MalwareDatabase;
@@ -78,8 +82,7 @@ public class AltResponseHandler {
   }
 
   private static String getPackageType(String repoKey, Repositories repositories) {
-    return repoKey;
-    // RepositoryConfiguration config = repositories.getRepositoryConfiguration(repoKey);
-    // return config.getPackageType();
+    RepositoryConfiguration config = repositories.getRepositoryConfiguration(repoKey);
+    return config.getPackageType();
   }
 }
