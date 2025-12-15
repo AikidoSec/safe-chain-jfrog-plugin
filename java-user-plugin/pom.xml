@@ -29,29 +29,14 @@
     <dependency>
       <groupId>org.artifactory</groupId>
       <artifactId>artifactory-papi</artifactId>
-      <version>${version.artifactory}</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
+      <version>7.7.3</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/artifactory-papi-7.7.3.jar</systemPath>
     </dependency>
+
   </dependencies>
 
-  <repositories>
-    <repository>
-      <id>jfrog-releases</id>
-      <url>https://releases.jfrog.io/artifactory/oss-releases-local</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
+
 
   <build>
     <plugins>
@@ -69,7 +54,7 @@
               <createDependencyReducedPom>false</createDependencyReducedPom>
               <artifactSet>
                 <excludes>
-                  <!-- Exclude provided dependencies (JFrog/Artifactory) -->
+                  <!-- Exclude system-scoped dependencies (JFrog/Artifactory) -->
                   <exclude>org.artifactory:*</exclude>
                   <!-- Exclude test dependencies -->
                   <exclude>org.junit.jupiter:*</exclude>
