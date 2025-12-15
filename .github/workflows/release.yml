@@ -54,25 +54,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
           body: |
-            ## Safe Chain JFrog Plugin Release ${{ github.ref_name }}
-
-            ### Artifacts
-            - `safe_chain_jfrog-${{ steps.get_version.outputs.version }}-uber.jar` - Uber JAR with dependencies (excludes JFrog provided libraries)
-            - `safeChainScript.groovy` - Groovy plugin script
-
-            ### Installation
-            1. Download both artifacts
-            2. Deploy to your JFrog Artifactory instance
-            3. Configure as needed
-
-            ### Changes
-            See commit history for details.
+            ## Safe Chain JFrog Plugin ${{ github.ref_name }}
+            ### Install
+            - Place `safe_chain_jfrog-${{ steps.get_version.outputs.version }}.jar` in `$JFROG_HOME/artifactory/var/etc/artifactory/plugins/lib`
+            - Place `safeChainScript.groovy` in `$JFROG_HOME/artifactory/var/etc/artifactory/plugins`
           draft: false
           prerelease: false
 
-      - name: Upload uber JAR
+      - name: Upload JAR
         uses: actions/upload-release-asset@v1
 
         env:
@@ -80,7 +71,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./java-user-plugin/target/safe_chain_jfrog-${{ steps.get_version.outputs.version }}-uber.jar
-          asset_name: safe_chain_jfrog-${{ steps.get_version.outputs.version }}-uber.jar
+          asset_name: safe_chain_jfrog-${{ steps.get_version.outputs.version }}.jar
           asset_content_type: application/java-archive
 
       - name: Upload Groovy script
